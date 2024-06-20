@@ -1,0 +1,20 @@
+# Ignore build files
+*.o
+*.lo
+*.la
+# Ignore object files
+*.obj
+*.a
+*.so
+# Ignore cmake generated files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+# Ignore CLion IDE files
+.idea/
+*.iml
+# Ignore executable files
+*.out
+*.exe
+*.app
