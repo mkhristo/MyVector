@@ -93,6 +93,19 @@ public:
     size_t get_size() const {
         return size;
     }
+
+    class iterator {
+    private:
+        T* ptr;
+    public:
+        explicit iterator(T* p) : ptr(p) {}
+        iterator operator++() { ++ptr; return *this; }
+        bool operator!=(const iterator& other) const { return ptr != other.ptr; }
+        const T& operator*() const { return *ptr; }
+    };
+
+    iterator begin() { return iterator(data); }
+    iterator end() { return iterator(data + size); }
 };
 
 #endif //MYVECTOR_MYVECTOR_H
