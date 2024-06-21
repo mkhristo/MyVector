@@ -2,51 +2,73 @@
 #include <iostream>
 
 int main() {
-    // Create a MyVector with initial capacity of 5
+    // Test the constructor
     MyVector<int> v(5);
+    std::cout << "Created a vector with initial capacity of 5." << std::endl;
 
-    // Add some elements to the vector
+    // Test push_back
     for (int i = 0; i < 5; ++i) {
         v.push_back(i);
+        std::cout << "Pushed back " << i << std::endl;
     }
 
-    // Access and print elements of the vector
-    for (size_t i = 0; i < 5; ++i) {
-        std::cout << "Element at index " << i << ": " << v[i] << std::endl;
+    // Test the iterator
+    std::cout << "Elements in the vector: ";
+    for (MyVector<int>::iterator it = v.begin(); it != v.end(); ++it) {
+        std::cout << *it << " ";
     }
+    std::cout << std::endl;
 
-    v.push_back(5);
-    v.push_back(6);
-    v.push_back(7);
-
-    // Test the copy constructor
-    MyVector<int> v_copy(v);
-    std::cout << "Element at index 2 in the copied vector: " << v_copy[2] << std::endl;
-
-    // Test the assignment operator
-    MyVector<int> v_assign;
-    v_assign = v;
-    std::cout << "Element at index 3 in the assigned vector: " << v_assign[3] << std::endl;
-
-    // Test the addition operator
-    MyVector<int> v_res = v + v_copy;
-    std::cout << "Size of resulting vector after addition: " << v_res.get_size() << std::endl;
-
-    // Test the new constructor with a large size that is expected to fail
-    MyVector<int> v_nothrow(static_cast<size_t>(-1), std::nothrow);
-    if (v_nothrow.is_data_null()) {
-        std::cout << "Failed to allocate memory for vector with nothrow constructor." << std::endl;
-    } else {
-        std::cout << "Successfully created a vector with nothrow constructor." << std::endl;
+    // Test the iterator with operator[]
+    std::cout << "Elements in the vector using iterator with operator[]: ";
+    for (MyVector<int>::iterator it = v.begin(); it != v.end(); ++it) {
+        std::cout << it[0] << " ";
     }
+    std::cout << std::endl;
 
-    // Test the resize method with a large size that is expected to fail
-    MyVector<int> v_resize(5);
-    if (!v_resize.resize(static_cast<size_t>(-1), std::nothrow)) {
-        std::cout << "Failed to resize vector with nothrow." << std::endl;
-    } else {
-        std::cout << "Successfully resized vector with nothrow." << std::endl;
-    }
+    // Test the iterator with operator+
+    MyVector<int>::iterator it = v.begin();
+    it = it + 2;
+    std::cout << "Element at position 2 using iterator with operator+: " << *it << std::endl;
+
+    // Test the iterator with operator-
+    it = v.end();
+    it = it - 1;
+    std::cout << "Last element using iterator with operator-: " << *it << std::endl;
+
+    // Test the iterator with operator+=
+    it = v.begin();
+    it += 2;
+    std::cout << "Element at position 2 using iterator with operator+=: " << *it << std::endl;
+
+    // Test the iterator with operator-=
+    it = v.end();
+    it -= 1;
+    std::cout << "Last element using iterator with operator-=: " << *it << std::endl;
+
+    // Test the iterator with operator++ and operator--
+    it = v.begin();
+    ++it;
+    std::cout << "Element at position 1 using iterator with operator++: " << *it << std::endl;
+    --it;
+    std::cout << "Element at position 0 using iterator with operator--: " << *it << std::endl;
+
+    // Test the iterator with operator++(int) and operator--(int)
+    it = v.begin();
+    it++;
+    std::cout << "Element at position 1 using iterator with operator++(int): " << *it << std::endl;
+    it--;
+    std::cout << "Element at position 0 using iterator with operator--(int): " << *it << std::endl;
+
+    // Test the iterator with relational operators
+    MyVector<int>::iterator it1 = v.begin();
+    MyVector<int>::iterator it2 = v.begin() + 1;
+    std::cout << "it1 == it2: " << (it1 == it2) << std::endl;
+    std::cout << "it1 != it2: " << (it1 != it2) << std::endl;
+    std::cout << "it1 < it2: " << (it1 < it2) << std::endl;
+    std::cout << "it1 <= it2: " << (it1 <= it2) << std::endl;
+    std::cout << "it1 > it2: " << (it1 > it2) << std::endl;
+    std::cout << "it1 >= it2: " << (it1 >= it2) << std::endl;
 
     return 0;
 }

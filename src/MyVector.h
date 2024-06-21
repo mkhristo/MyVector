@@ -13,19 +13,17 @@ private:
 
 public:
     MyVector() : data(nullptr), size(0), capacity(0) {}
-
     explicit MyVector(size_t initial_capacity) : data(new T[initial_capacity]), size(0), capacity(initial_capacity) {}
-
     MyVector(size_t initial_capacity, std::nothrow_t) noexcept : data(new (std::nothrow) T[initial_capacity]), size(0), capacity(initial_capacity) {}
-
     MyVector(const MyVector& other) : data(new T[other.capacity]), size(other.size), capacity(other.capacity) {
         std::copy(other.data, other.data + other.size, data);
     }
 
-    bool is_data_null() const {
-        return data == nullptr;
+    ~MyVector() {
+        delete[] data;
     }
 
+    // Operator overloads
     MyVector& operator=(const MyVector& other) {
         if (this != &other) {
             delete[] data;
@@ -59,10 +57,7 @@ public:
         return result;
     }
 
-    ~MyVector() {
-        delete[] data;
-    }
-
+    // Methods
     void push_back(const T& item) {
         if (size >= capacity) {
             capacity = (capacity == 0) ? 1 : capacity * 2;
@@ -94,18 +89,110 @@ public:
         return size;
     }
 
+    bool is_data_null() const {
+        return data == nullptr;
+    }
+
+    // Iterator
     class iterator {
     private:
         T* ptr;
+        T* begin_ptr;
+        T* end_ptr;
+
     public:
-        explicit iterator(T* p) : ptr(p) {}
-        iterator operator++() { ++ptr; return *this; }
+        iterator(T* p, T* begin, T* end) : ptr(p), begin_ptr(begin), end_ptr(end) {}
+
+        iterator& operator++() {
+            if (ptr >= end_ptr) throw std::out_of_range("Iterator out of range");
+            ++ptr;
+            return *this;
+        }
+
+        iterator operator++(int) {
+            iterator temp = *this;
+            if (ptr >= end_ptr) throw std::out_of_range("Iterator out of range");
+            ++ptr;
+            return temp;
+        }
+
+        iterator& operator--() {
+            if (ptr <= begin_ptr) throw std::out_of_range("Iterator out of range");
+            --ptr;
+            return *this;
+        }
+
+        iterator operator--(int) {
+            iterator temp = *this;
+            if (ptr <= begin_ptr) throw std::out_of_range("Iterator out of range");
+            --ptr;
+            return temp;
+        }
+
+        iterator operator+(size_t n) const {
+            iterator temp = *this;
+            temp.ptr = (temp.ptr + n < end_ptr) ? temp.ptr + n : end_ptr;
+            return temp;
+        }
+
+        iterator operator-(size_t n) const {
+            iterator temp = *this;
+            temp.ptr = (temp.ptr >= begin_ptr + n) ? temp.ptr - n : begin_ptr;
+            return temp;
+        }
+
+        iterator& operator+=(size_t n) {
+            ptr = (ptr + n < end_ptr) ? ptr + n : end_ptr;
+            return *this;
+        }
+
+        iterator& operator-=(size_t n) {
+            ptr = (ptr >= begin_ptr + n) ? ptr - n : begin_ptr;
+            return *this;
+        }
+
+        bool operator==(const iterator& other) const { return ptr == other.ptr; }
         bool operator!=(const iterator& other) const { return ptr != other.ptr; }
-        const T& operator*() const { return *ptr; }
+        bool operator<(const iterator& other) const { return ptr < other.ptr; }
+        bool operator<=(const iterator& other) const { return ptr <= other.ptr; }
+        bool operator>(const iterator& other) const { return ptr > other.ptr; }
+        bool operator>=(const iterator& other) const { return ptr >= other.ptr; }
+
+        // Access to element
+        T& operator*() {
+            if (ptr >= end_ptr) throw std::out_of_range("Iterator out of range");
+            return *ptr;
+        }
+
+        const T& operator*() const {
+            if (ptr >= end_ptr) throw std::out_of_range("Iterator out of range");
+            return *ptr;
+        }
+
+        T* operator->() {
+            if (ptr >= end_ptr) throw std::out_of_range("Iterator out of range");
+            return ptr;
+        }
+
+        const T* operator->() const {
+            if (ptr >= end_ptr) throw std::out_of_range("Iterator out of range");
+            return ptr;
+        }
+
+        T& operator[](size_t n) {
+            if (ptr + n >= end_ptr || ptr + n < begin_ptr) throw std::out_of_range("Iterator out of range");
+            return *(ptr + n);
+        }
+
+        const T& operator[](size_t n) const {
+            if (ptr + n >= end_ptr || ptr + n < begin_ptr) throw std::out_of_range("Iterator out of range");
+            return *(ptr + n);
+        }
     };
 
-    iterator begin() { return iterator(data); }
-    iterator end() { return iterator(data + size); }
+    iterator begin() { return iterator(data, data, data + size); }
+    iterator end() { return iterator(data + size, data, data + size); }
+
 };
 
-#endif //MYVECTOR_MYVECTOR_H
+#endif
