@@ -46,17 +46,6 @@ public:
         }
     }
 
-    MyVector operator+(const MyVector& other) {
-        if (data == nullptr || other.data == nullptr) {
-            throw std::runtime_error("Vector data is null");
-        }
-        MyVector result(capacity + other.capacity);
-        std::copy(data, data + size, result.data);
-        std::copy(other.data, other.data + other.size, result.data + size);
-        result.size = size + other.size;
-        return result;
-    }
-
     // Methods
     void push_back(const T& item) {
         if (size >= capacity) {
